@@ -1,0 +1,50 @@
+{
+  "name": "@warrantdev/react-warrant-js",
+  "version": "0.0.1",
+  "description": "React components for Warrant",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist/**/*",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "webpack --mode production --config webpack.config.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/warrant-dev/react-warrant-js.git"
+  },
+  "keywords": [
+    "warrant",
+    "authorization",
+    "rbac",
+    "role based access control",
+    "access control",
+    "react"
+  ],
+  "author": "Karan Kajla & Aditya Kajla",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/warrant-dev/react-warrant-js/issues"
+  },
+  "homepage": "https://github.com/warrant-dev/react-warrant-js#readme",
+  "devDependencies": {
+    "@types/react": "^17.0.11",
+    "@types/react-dom": "^17.0.8",
+    "clean-webpack-plugin": "^4.0.0-alpha.0",
+    "react-dom": "^17.0.2",
+    "ts-loader": "^9.2.3",
+    "typescript": "^4.3.4",
+    "webpack": "^5.40.0",
+    "webpack-cli": "^4.7.2"
+  },
+  "peerDependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "dependencies": {
+    "axios": "^0.21.1"
+  }
+}
