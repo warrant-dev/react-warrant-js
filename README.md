@@ -1,4 +1,4 @@
-# React Components, Hooks, and Methods for Warrant
+# @warrantdev/react-warrant-js
 
 ## Overview
 The Warrant React library provides components, hooks, and helper methods for controlling access to pages and components in React using [Warrant](https://warrant.dev/). The library interacts directly with the Warrant API using a short-lived session token that must be created server-side using your API key. Refer to [this guide]() to see how to generate session tokens for your users.
