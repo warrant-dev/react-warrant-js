@@ -1,6 +1,6 @@
 {
   "name": "@warrantdev/react-warrant-js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "React components for Warrant",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -34,6 +34,7 @@
   "devDependencies": {
     "@types/react": "^17.0.11",
     "@types/react-dom": "^17.0.8",
+    "@types/react-router-dom": "^5.1.8",
     "clean-webpack-plugin": "^4.0.0-alpha.0",
     "ts-loader": "^9.2.3",
     "typescript": "^4.3.4",
@@ -42,10 +43,11 @@
   },
   "peerDependencies": {
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^5.2.0"
   },
   "dependencies": {
-    "@warrantdev/warrant-js": "^0.0.2",
+    "@warrantdev/warrant-js": "^0.0.4",
     "axios": "^0.21.1"
   }
 }

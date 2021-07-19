@@ -98,66 +98,8 @@ const Login = () => {
 export default Login;
 ```
 
-### `withWarrant`
-Use the `withWarrant` Higher Order Component (HOC) to protect routes and components that should only be accessible to users with certain privileges.
-
-#### **Protecting Routes**
-NOTE: This example uses `react-router` but you can use any routing library.
-```jsx
-// App.jsx
-import React from "react";
-import { Router, Route, Switch } from "react-router-dom";
-import { createBrowserHistory } from "history";
-import { WarrantProvider, withWarrant } from "@warrantdev/react-warrant-js";
-import PublicPage from "./PublicPage";
-import ProtectedPage from "./ProtectedPage";
-
-const history = createBrowserHistory();
-
-const App = () => {
-    return <WarrantProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
-        <Router history={history}>
-            <Switch>
-                <Route path="/public_route" exact component={PublicPage}/>
-                {/*
-                    Wrap the component in the withWarrant HOC,
-                    passing it the permissionId required to render
-                    the component and the path to redirect to if
-                    the user does not have access.
-                */}
-                <Route path="/protected_route" exact component={useWarrant(ProtectedPage, {
-                    permissionId: "view_protected_route",
-                    redirectTo: "/public_route",
-                })}>
-            </Switch>
-        </Router>
-    </WarrantProvider>;
-};
-
-export default App;
-```
-
-#### **Protecting Components**
-```jsx
-import React from "react";
-import { withWarrant } from "@warrantdev/react-warrant-js";
-
-const MySecretComponent = () => {
-    return <div>Super secret text</div>;
-};
-
-// Wrap the component in the withWarrant HOC,
-// passing it the permissionId required to render
-// the component and the path to redirect to if
-// the user does not have access.
-export default withWarrant(MySecretComponent, {
-    permissionId: "view_protected_component",
-    redirectTo: "/",
-});
-```
-
-### `hasWarrant(permissionId)`
-`hasWarrant` is a utility function that returns a `Promise` which resolves with `true` if the user for the current session token has the permission with the specified `permissionId` and `false` otherwise. Use it for fine-grained conditional rendering or for specific logic within components.
+### `hasWarrant(objectType, objectId, relation)`
+`hasWarrant` is a utility function that returns a `Promise` which resolves with `true` if the user for the current session token has the warrant with the specified `objectType`, `objectId`, and `relation` and returns `false` otherwise. Use it for fine-grained conditional rendering or for specific logic within components.
 
 Using `hasWarrant` through the `useWarrant` hook:
 ```jsx
@@ -170,8 +112,8 @@ const MyComponent = () => {
     useEffect(() => {
         const fetchProtectedInfo = async () => {
             // Only fetch protected info from server if
-            // user has the "view_protected_info" permission.
-            if (await hasWarrant("view_protected_info")) {
+            // user can "view" the info object "protected_info".
+            if (await hasWarrant("info", "protected_info", "view")) {
                 // request protected info from server
             }
         };
@@ -198,8 +140,8 @@ class MyComponent extends React.Component {
         const { hasWarrant } = this.context;
 
         // Only fetch protected info from server if
-        // user has the "view_protected_info" permission.
-        if (await hasWarrant("view_protected_info")) {
+            // user can "view" the info object "protected_info".
+        if (await hasWarrant("info", "protected_info", "view")) {
             await fetchProtectedInfo();
         }
     };
@@ -222,8 +164,45 @@ MyComponent.contextType = WarrantContext;
 export default MyComponent;
 ```
 
+### `ProtectedRoute`
+`ProtectedRoute` is a utility component you can use in place of the standard [React Router](https://reactrouter.com/) `Route` component to easily protect your React routes behind a warrant.
+```jsx
+import React from "react";
+import { Router, Route, Switch } from "react-router-dom";
+import { createBrowserHistory } from "history";
+import { WarrantProvider, ProtectedRoute, WARRANT_IGNORE_ID } from "@warrantdev/react-warrant-js";
+import PublicPage from "./PublicPage";
+import ProtectedPage from "./ProtectedPage";
+
+const history = createBrowserHistory();
+
+const App = () => {
+    return <WarrantProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
+        <Router history={history}>
+            <Switch>
+                <Route path="/public_route" exact component={PublicPage}/>
+                <ProtectedRoute
+                    path="/protected_route/:id"
+                    key="/protected_route/:id"
+                    exact
+                    component={ProtectedPage}
+                    options={{
+                        objectType: "myObject",
+                        objectIdParam: "id",
+                        relation: "view",
+                        redirectTo: "/public_route",
+                    }}
+                />
+            </Switch>
+        </Router>
+    </WarrantProvider>;
+};
+
+export default App;
+```
+
 ### `ProtectedComponent`
-`ProtectedComponent` is a utility component you can wrap around markup or components that should only be accessible to users with certain privileges. It accepts a `permissionId` prop and only renders the components it wraps if the user has the given permission.
+`ProtectedComponent` is a utility component you can wrap around markup or components that should only be accessible to users with certain privileges. It only renders the components it wraps if the user has the given warrant.
 ```jsx
 import React from "react";
 import { ProtectedComponent } from "@warrantdev/react-warrant-js";
@@ -231,14 +210,98 @@ import { ProtectedComponent } from "@warrantdev/react-warrant-js";
 const MyComponent = () => {
     return <div>
         <MyPublicComponent/>
-        {/* hides MyProtectedComponent unless user has "view_my_protected_component" */}
-        <ProtectedComponent permission="view_my_protected_component">
+        {/* hides MyProtectedComponent unless the user can "view" myObject with id object.id */}
+        <ProtectedComponent
+            objectType="myObject"
+            objectId={object.id}
+            relation="view"
+        >
             <MyProtectedComponent/>
         </ProtectedComponent>
     </div>;
 };
 
 export default MyComponent;
+```
+
+**NOTE:** To ignore the `objectId` when using any of the provided components, you can pass the constant `WARRANT_IGNORE_ID`. You must have a corresponding warrant that grants access to **ANY** user on the given `objectType` for this check to succeed.
+```jsx
+import React from "react";
+import { ProtectedComponent, WARRANT_IGNORE_ID } from "@warrantdev/react-warrant-js";
+
+const MyComponent = () => {
+    return <div>
+        <MyPublicComponent/>
+        {/* Only shows MyProtectedComponent if the user can "view" ANY myObject */}
+        <ProtectedComponent
+            objectType="myObject"
+            objectId={WARRANT_IGNORE_ID}
+            relation="view"
+        >
+            <MyProtectedComponent/>
+        </ProtectedComponent>
+    </div>;
+};
+
+export default MyComponent;
+```
+
+### `withWarrant`
+Use the `withWarrant` Higher Order Component (HOC) to protect components that should only be accessible to users with certain privileges.
+
+#### **Protecting Routes**
+NOTE: This example uses `react-router` but you can use any routing library.
+```jsx
+// App.jsx
+import React from "react";
+import { Router, Route, Switch } from "react-router-dom";
+import { createBrowserHistory } from "history";
+import { WarrantProvider, withWarrant } from "@warrantdev/react-warrant-js";
+import PublicPage from "./PublicPage";
+import ProtectedPage from "./ProtectedPage";
+
+const history = createBrowserHistory();
+
+const App = () => {
+    return <WarrantProvider clientKey="client_test_f5dsKVeYnVSLHGje44zAygqgqXiLJBICbFzCiAg1E=">
+        <Router history={history}>
+            <Switch>
+                <Route path="/public_route" exact component={PublicPage}/>
+                {/*
+                    Only render ProtectedPage if the user
+                    can "view" the route "protected_route".
+                */}
+                <Route path="/protected_route" exact component={useWarrant(ProtectedPage, {
+                    objectType: "route",
+                    objectId: "protected_route",
+                    relation: "view",
+                    redirectTo: "/public_route",
+                })}>
+            </Switch>
+        </Router>
+    </WarrantProvider>;
+};
+
+export default App;
+```
+
+#### **Protecting Components**
+```jsx
+import React from "react";
+import { withWarrant } from "@warrantdev/react-warrant-js";
+
+const MySecretComponent = () => {
+    return <div>Super secret text</div>;
+};
+
+// Only render MySecretComponent if the user
+// can "view" the component "MySecretComponent".
+export default withWarrant(MySecretComponent, {
+    objectType: "component",
+    objectId: "MySecretComponent",
+    relation: "view",
+    redirectTo: "/",
+});
 ```
 
 ## Notes
