@@ -2,21 +2,29 @@ import React, { useEffect, useState } from "react";
 import useWarrant from "./useWarrant";
 
 export interface ProtectedComponentProps {
-    permissionId: string;
+    objectType: string;
+    objectId: string;
+    relation: string;
     children: React.ReactChildren;
 }
 
-const ProtectedComponent: React.FunctionComponent<ProtectedComponentProps> = ({ permissionId, children }) => {
+const ProtectedComponent: React.FunctionComponent<ProtectedComponentProps> = ({ objectType, objectId, relation, children }) => {
     const [showChildren, setShowChildren] = useState<boolean>(false);
-    const { hasWarrant } = useWarrant();
+    const { sessionToken, hasWarrant } = useWarrant();
 
     useEffect(() => {
-        const checkWarrant = async () => {
-            setShowChildren(await hasWarrant(permissionId));
+        if (!objectId) {
+            throw new Error("Invalid or no objectId provided to ProtectedComponent");
         }
 
-        checkWarrant();
-    }, []);
+        const checkWarrant = async () => {
+            setShowChildren(await hasWarrant(objectType, objectId, relation));
+        }
+
+        if (sessionToken) {
+            checkWarrant();
+        }
+    }, [sessionToken]);
 
     if (showChildren) {
         return <>

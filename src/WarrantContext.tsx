@@ -4,7 +4,7 @@ export interface AuthorizationContext {
     clientKey: string;
     sessionToken: string;
     setSessionToken: (sessionToken: string) => void;
-    hasWarrant: (warrantName: string) => Promise<boolean>;
+    hasWarrant: (objectType: string, objectId: string, relation: string) => Promise<boolean>;
     isLoading: boolean;
 }
 

@@ -28,9 +28,13 @@ const WarrantProvider = (options: AuthorizationProvider): JSX.Element => {
         localStorage.setItem(LOCAL_STORAGE_KEY_SESSION_TOKEN, newSessionToken);
     };
 
-    const hasWarrant = useCallback(async (permissionId: string): Promise<boolean> => {
+    const hasWarrant = useCallback(async (objectType: string, objectId: string, relation: string): Promise<boolean> => {
+        if (!sessionToken) {
+            throw new Error("No session token provided to Warrant. You may have forgotten to call setSessionToken with a valid session token to finish initializing Warrant.");
+        }
+
         setIsLoading(true);
-        const isAuthorized = await new WarrantClient(clientKey, sessionToken).isAuthorized(permissionId);
+        const isAuthorized = await new WarrantClient(clientKey, sessionToken).isAuthorized(objectType, objectId, relation);
         setIsLoading(false);
 
         return isAuthorized;
