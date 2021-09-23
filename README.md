@@ -1,5 +1,8 @@
 # @warrantdev/react-warrant-js
 
+[![npm](https://img.shields.io/npm/v/@warrantdev/react-warrant-js)](https://www.npmjs.com/package/@warrantdev/react-warrant-js)
+[![Discord](https://img.shields.io/discord/865661082203193365?label=discord)](https://discord.gg/QNCMKWzqET)
+
 ## Overview
 The Warrant React library provides components, hooks, and helper methods for controlling access to pages and components in React using [Warrant](https://warrant.dev/). The library interacts directly with the Warrant API using a short-lived session token that must be created server-side using your API key. Refer to [this guide]() to see how to generate session tokens for your users.
 
