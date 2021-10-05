@@ -31,6 +31,7 @@ module.exports = env => {
 
             filename: "index.js",
             path: path.resolve(__dirname, "dist"),
+            globalObject: "this",
         },
 
         externals: {
