@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
-import {Client as WarrantClient} from "@warrantdev/warrant-js";
+import { Client as WarrantClient } from "@warrantdev/warrant-js";
 
-import WarrantContext, { AuthorizationContext } from "./WarrantContext";
+import WarrantContext from "./WarrantContext";
 
-export interface AuthorizationProvider extends AuthorizationContext {
+export interface AuthorizationProvider {
     clientKey: string;
     children: React.ReactNode;
 }
