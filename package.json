@@ -48,6 +48,6 @@
   },
   "dependencies": {
     "@warrantdev/warrant-js": "^0.0.4",
-    "axios": "^0.21.1"
+    "axios": "^0.21.2"
   }
 }
