@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import WarrantCheck from "../types/WarrantCheck";
+import { WarrantCheck } from "@warrantdev/warrant-js";
 
 export interface AuthorizationContext {
     clientKey: string;

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
-import { WARRANT_IGNORE_ID } from "@warrantdev/warrant-js";
+import { WARRANT_IGNORE_ID, WarrantCheck } from "@warrantdev/warrant-js";
 import useWarrant from "./useWarrant";
-import WarrantCheck from "../types/WarrantCheck";
 
 export interface ProtectedRouteOptions extends WarrantCheck {
     redirectTo: string;

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Client as WarrantClient } from "@warrantdev/warrant-js";
 
-import WarrantCheck from "../types/WarrantCheck";
+import { WarrantCheck } from "@warrantdev/warrant-js";
 import WarrantContext from "./WarrantContext";
 
 export interface AuthorizationProvider {

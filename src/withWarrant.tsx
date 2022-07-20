@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import WarrantCheck from "../types/WarrantCheck";
+import { WarrantCheck } from "@warrantdev/warrant-js";
 import useWarrant from "./useWarrant";
 
 export interface WithWarrantOptions {
