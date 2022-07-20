@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
 import { WARRANT_IGNORE_ID } from "@warrantdev/warrant-js";
 import useWarrant from "./useWarrant";
+import WarrantCheck from "../types/WarrantCheck";
 
-export interface ProtectedRouteOptions {
-    objectType: string;
-    objectIdParam: string;
-    relation: string;
+export interface ProtectedRouteOptions extends WarrantCheck {
     redirectTo: string;
 }
 
@@ -17,9 +15,8 @@ export interface ProtectedRouteProps extends RouteProps {
 
 const ProtectedRoute: React.FunctionComponent<ProtectedRouteProps> = ({
     options: {
-        objectType,
-        objectIdParam,
-        relation,
+        op,
+        warrants,
         redirectTo,
     },
     component,
@@ -30,24 +27,25 @@ const ProtectedRoute: React.FunctionComponent<ProtectedRouteProps> = ({
     const [showWrappedComponent, setShowWrappedComponent] = useState<boolean | null>(null);
 
     useEffect(() => {
-        const checkForWarrant = async (objectId: string) => {
-            setShowWrappedComponent(await hasWarrant(objectType, objectId, relation));
+        const checkForWarrant = async (warrantCheck: WarrantCheck) => {
+            setShowWrappedComponent(await hasWarrant(warrantCheck));
         };
 
         if (sessionToken) {
-            let objectId = "";
-            if (objectIdParam === WARRANT_IGNORE_ID) {
-                objectId = WARRANT_IGNORE_ID;
-            } else {
-                /** @ts-ignore */
-                objectId = computedMatch.params[objectIdParam];
-            }
+            warrants.forEach((warrant) => {
+                if (warrant.objectId === WARRANT_IGNORE_ID) {
+                    warrant.objectId = WARRANT_IGNORE_ID;
+                } else if (computedMatch.params[warrant.objectId]) {
+                    /** @ts-ignore */
+                    warrant.objectId = computedMatch.params[warrant.objectId];
+                }
 
-            if (!objectId) {
-                throw new Error("Invalid or no objectIdParam provided for ProtectedRoute");
-            }
+                if (!warrant.objectId) {
+                    throw new Error("Invalid or no objectId provided for ProtectedRoute");
+                }
+            })   
 
-            checkForWarrant(objectId);
+            checkForWarrant({ op, warrants });
         }
     }, [sessionToken]);
 
