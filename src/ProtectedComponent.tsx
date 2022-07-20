@@ -11,7 +11,7 @@ const ProtectedComponent: React.FunctionComponent<ProtectedComponentProps> = ({ 
     const { sessionToken, hasWarrant } = useWarrant();
 
     useEffect(() => {
-        if (!warrants) {
+        if (!warrants || warrants.length === 0) {
             throw new Error("Invalid or no warrants provided to ProtectedComponent");
         }
 
