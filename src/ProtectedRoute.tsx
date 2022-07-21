@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
-import { WARRANT_IGNORE_ID, WarrantCheck } from "@warrantdev/warrant-js";
+import { WarrantCheck } from "@warrantdev/warrant-js";
 import useWarrant from "./useWarrant";
 
 export interface ProtectedRouteOptions extends WarrantCheck {
@@ -32,9 +32,7 @@ const ProtectedRoute: React.FunctionComponent<ProtectedRouteProps> = ({
 
         if (sessionToken) {
             warrants.forEach((warrant) => {
-                if (warrant.objectId === WARRANT_IGNORE_ID) {
-                    warrant.objectId = WARRANT_IGNORE_ID;
-                } else if (computedMatch.params[warrant.objectId]) {
+                if (computedMatch.params[warrant.objectId]) {
                     /** @ts-ignore */
                     warrant.objectId = computedMatch.params[warrant.objectId];
                 }
