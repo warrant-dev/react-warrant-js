@@ -173,7 +173,7 @@ export default MyComponent;
 import React from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import { WarrantProvider, ProtectedRoute, WARRANT_IGNORE_ID } from "@warrantdev/react-warrant-js";
+import { WarrantProvider, ProtectedRoute } from "@warrantdev/react-warrant-js";
 import PublicPage from "./PublicPage";
 import ProtectedPage from "./ProtectedPage";
 
@@ -217,28 +217,6 @@ const MyComponent = () => {
         <ProtectedComponent
             objectType="myObject"
             objectId={object.id}
-            relation="view"
-        >
-            <MyProtectedComponent/>
-        </ProtectedComponent>
-    </div>;
-};
-
-export default MyComponent;
-```
-
-**NOTE:** To ignore the `objectId` when using any of the provided components, you can pass the constant `WARRANT_IGNORE_ID`. You must have a corresponding warrant that grants access to **ANY** user on the given `objectType` for this check to succeed.
-```jsx
-import React from "react";
-import { ProtectedComponent, WARRANT_IGNORE_ID } from "@warrantdev/react-warrant-js";
-
-const MyComponent = () => {
-    return <div>
-        <MyPublicComponent/>
-        {/* Only shows MyProtectedComponent if the user can "view" ANY myObject */}
-        <ProtectedComponent
-            objectType="myObject"
-            objectId={WARRANT_IGNORE_ID}
             relation="view"
         >
             <MyProtectedComponent/>

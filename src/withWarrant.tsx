@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { WarrantCheck } from "@warrantdev/warrant-js";
 import useWarrant from "./useWarrant";
 
 export interface WithWarrantOptions {
-    objectType: string;
-    objectId: string;
-    relation: string;
+    warrantCheck: WarrantCheck;
     redirectTo: string;
 }
 
@@ -17,13 +16,13 @@ export interface WithWarrantOptions {
  */
 const withWarrant = (WrappedComponent: React.ComponentClass, options: WithWarrantOptions) => {
     return (props: any) => {
-        const { objectType, objectId, relation, redirectTo } = options;
+        const { warrantCheck, redirectTo } = options;
         const { sessionToken, hasWarrant } = useWarrant();
         const [showWrappedComponent, setShowWrappedComponent] = useState<boolean>(false);
 
         useEffect(() => {
             const checkWarrant = async () => {
-                setShowWrappedComponent(await hasWarrant(objectType, objectId, relation));
+                setShowWrappedComponent(await hasWarrant(warrantCheck));
             };
 
             if (sessionToken) {
