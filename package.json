@@ -48,6 +48,6 @@
     "react-router-dom": "^5.2.0"
   },
   "dependencies": {
-    "@warrantdev/warrant-js": "^0.0.5"
+    "@warrantdev/warrant-js": "^1.0.0"
   }
 }
