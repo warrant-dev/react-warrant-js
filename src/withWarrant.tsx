@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { WarrantCheck } from "@warrantdev/warrant-js";
 import useWarrant from "./useWarrant";
 
-export interface WithWarrantOptions {
-    warrantCheck: WarrantCheck;
+export interface WithWarrantOptions extends WarrantCheck {
     redirectTo: string;
 }
 
@@ -16,13 +15,13 @@ export interface WithWarrantOptions {
  */
 const withWarrant = (WrappedComponent: React.ComponentClass, options: WithWarrantOptions) => {
     return (props: any) => {
-        const { warrantCheck, redirectTo } = options;
+        const { op, warrants, redirectTo } = options;
         const { sessionToken, hasWarrant } = useWarrant();
         const [showWrappedComponent, setShowWrappedComponent] = useState<boolean>(false);
 
         useEffect(() => {
             const checkWarrant = async () => {
-                setShowWrappedComponent(await hasWarrant(warrantCheck));
+                setShowWrappedComponent(await hasWarrant({ op, warrants }));
             };
 
             if (sessionToken) {
