@@ -31,7 +31,8 @@ const ProtectedRoute: React.FunctionComponent<ProtectedRouteProps> = ({
         };
 
         if (sessionToken) {
-            warrants.forEach((warrant) => {
+            let warrantsToCheck = [...warrants].map(warrant => ({...warrant}));
+            warrantsToCheck.forEach((warrant) => {
                 if (computedMatch.params[warrant.objectId]) {
                     /** @ts-ignore */
                     warrant.objectId = computedMatch.params[warrant.objectId];
@@ -42,7 +43,7 @@ const ProtectedRoute: React.FunctionComponent<ProtectedRouteProps> = ({
                 }
             })   
 
-            checkForWarrant({ op, warrants });
+            checkForWarrant({ op, warrants: warrantsToCheck });
         }
     }, [sessionToken]);
 
