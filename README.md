@@ -101,8 +101,8 @@ const Login = () => {
 export default Login;
 ```
 
-### `hasWarrant(objectType, objectId, relation)`
-`hasWarrant` is a utility function that returns a `Promise` which resolves with `true` if the user for the current session token has the warrant with the specified `objectType`, `objectId`, and `relation` and returns `false` otherwise. Use it for fine-grained conditional rendering or for specific logic within components.
+### `hasWarrant(warrantCheck)`
+`hasWarrant` is a utility function that returns a `Promise` which resolves with `true` if the user for the current session token has the specified `warrants` and returns `false` otherwise. Use it for fine-grained conditional rendering or for specific logic within components.
 
 Using `hasWarrant` through the `useWarrant` hook:
 ```jsx
@@ -116,7 +116,14 @@ const MyComponent = () => {
         const fetchProtectedInfo = async () => {
             // Only fetch protected info from server if
             // user can "view" the info object "protected_info".
-            if (await hasWarrant("info", "protected_info", "viewer")) {
+            const userIsAuthorized = await hasWarrant({
+                warrants: [{
+                    objectType: "info",
+                    objectId: "protected_info",
+                    relation: "viewer",
+                }]
+            });
+            if (userIsAuthorized) {
                 // request protected info from server
             }
         };
@@ -143,8 +150,15 @@ class MyComponent extends React.Component {
         const { hasWarrant } = this.context;
 
         // Only fetch protected info from server if
-            // user can "view" the info object "protected_info".
-        if (await hasWarrant("info", "protected_info", "view")) {
+        // user can "view" the info object "protected_info".
+        const userIsAuthorized = await hasWarrant({
+            warrants: [{
+                objectType: "info",
+                objectId: "protected_info",
+                relation: "viewer",
+            }]
+        });
+        if (userIsAuthorized) {
             await fetchProtectedInfo();
         }
     };
@@ -190,9 +204,11 @@ const App = () => {
                     exact
                     component={ProtectedPage}
                     options={{
-                        objectType: "myObject",
-                        objectIdParam: "id",
-                        relation: "view",
+                        warrants: [{
+                            objectType: "myObject",
+                            objectId: "id",
+                            relation: "view",
+                        }],
                         redirectTo: "/public_route",
                     }}
                 />
@@ -215,9 +231,11 @@ const MyComponent = () => {
         <MyPublicComponent/>
         {/* hides MyProtectedComponent unless the user can "view" myObject with id object.id */}
         <ProtectedComponent
-            objectType="myObject"
-            objectId={object.id}
-            relation="view"
+            warrants={[{
+                objectType: "myObject",
+                objectId: object.id,
+                relation: "view",
+            }]}
         >
             <MyProtectedComponent/>
         </ProtectedComponent>
@@ -253,9 +271,11 @@ const App = () => {
                     can "view" the route "protected_route".
                 */}
                 <Route path="/protected_route" exact component={useWarrant(ProtectedPage, {
-                    objectType: "route",
-                    objectId: "protected_route",
-                    relation: "view",
+                    warrants: [{
+                        objectType: "route",
+                        objectId: "protected_route",
+                        relation: "view",
+                    }],
                     redirectTo: "/public_route",
                 })}>
             </Switch>
@@ -278,10 +298,36 @@ const MySecretComponent = () => {
 // Only render MySecretComponent if the user
 // can "view" the component "MySecretComponent".
 export default withWarrant(MySecretComponent, {
-    objectType: "component",
-    objectId: "MySecretComponent",
-    relation: "view",
+    warrants: [{
+        objectType: "component",
+        objectId: "MySecretComponent",
+        relation: "view",
+    }],
     redirectTo: "/",
+});
+```
+
+## Support for Multiple Warrants
+
+`warrants` contains the list of warrants evaluted to determine if the user has access. If `warrants` contains multiple warrants, the `op` parameter is required and specifies how the list of warrants should be evaluated.
+
+**anyOf** specifies that the access check request will be authorized if *any of* the warrants are matched and will not be authorized otherwise.
+
+**allOf** specifies that the access check request will be authorized if *all of* the warrants are matched and will not be authorized otherwise.
+
+```jsx
+// User is authorized if they are a 'viewer' of protected_info OR a 'viewer' of 'another_protected_info'
+const isAuthorized = await hasWarrant({
+    op: "anyOf",
+    warrants: [{
+        objectType: "info",
+        objectId: "protected_info",
+        relation: "viewer",
+    }, {
+        objectType: "info",
+        objectId: "another_protected_info",
+        relation: "viewer",
+    }]
 });
 ```
 
