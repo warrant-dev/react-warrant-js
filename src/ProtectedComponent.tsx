@@ -3,7 +3,7 @@ import { WarrantCheck } from "@warrantdev/warrant-js";
 import useWarrant from "./useWarrant";
 
 export interface ProtectedComponentProps extends WarrantCheck {
-    children: React.ReactChildren;
+    children: React.ReactNode | React.ReactChildren;
 }
 
 const ProtectedComponent: React.FunctionComponent<ProtectedComponentProps> = ({ op, warrants, children }) => {
