@@ -41,11 +41,11 @@ const ProtectedRoute: React.FunctionComponent<ProtectedRouteProps> = ({
                 if (!warrant.objectId) {
                     throw new Error("Invalid or no objectId provided for ProtectedRoute");
                 }
-            })   
+            })
 
             checkForWarrant({ op, warrants: warrantsToCheck });
         }
-    }, [sessionToken]);
+    }, [sessionToken, JSON.stringify(warrants)]);
 
     return <Route
         {...rest}

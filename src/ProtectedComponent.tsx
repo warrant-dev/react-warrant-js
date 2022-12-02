@@ -22,7 +22,7 @@ const ProtectedComponent: React.FunctionComponent<ProtectedComponentProps> = ({ 
         if (sessionToken) {
             checkWarrant();
         }
-    }, [sessionToken]);
+    }, [sessionToken, JSON.stringify(warrants)]);
 
     if (showChildren) {
         return <>
