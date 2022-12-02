@@ -1,18 +1,18 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Client as WarrantClient } from "@warrantdev/warrant-js";
+import { Client as WarrantClient, WarrantCheck } from "@warrantdev/warrant-js";
 
-import { WarrantCheck } from "@warrantdev/warrant-js";
 import WarrantContext from "./WarrantContext";
 
 export interface AuthorizationProvider {
     clientKey: string;
+    endpoint?: string;
     children: React.ReactNode;
 }
 
 const LOCAL_STORAGE_KEY_SESSION_TOKEN = "__warrantSessionToken";
 
 const WarrantProvider = (options: AuthorizationProvider): JSX.Element => {
-    const { clientKey, children } = options;
+    const { clientKey, endpoint, children } = options;
     const [sessionToken, setSessionToken] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -35,7 +35,7 @@ const WarrantProvider = (options: AuthorizationProvider): JSX.Element => {
         }
 
         setIsLoading(true);
-        const isAuthorized = await new WarrantClient(clientKey, sessionToken).isAuthorized(warrantCheck);
+        const isAuthorized = await new WarrantClient({ clientKey, sessionToken, endpoint }).isAuthorized(warrantCheck);
         setIsLoading(false);
 
         return isAuthorized;
