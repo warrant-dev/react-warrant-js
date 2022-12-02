@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Client as WarrantClient, WarrantCheck } from "@warrantdev/warrant-js";
 
-import { API_URL_BASE } from "./constants";
 import WarrantContext from "./WarrantContext";
 
 export interface AuthorizationProvider {
@@ -13,7 +12,7 @@ export interface AuthorizationProvider {
 const LOCAL_STORAGE_KEY_SESSION_TOKEN = "__warrantSessionToken";
 
 const WarrantProvider = (options: AuthorizationProvider): JSX.Element => {
-    const { clientKey, endpoint = API_URL_BASE, children } = options;
+    const { clientKey, endpoint, children } = options;
     const [sessionToken, setSessionToken] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
