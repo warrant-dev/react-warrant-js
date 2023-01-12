@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { WarrantCheck } from "@warrantdev/warrant-js";
+import { PermissionCheck } from "@warrantdev/warrant-js";
 import useWarrant from "./useWarrant";
 
-export interface WithWarrantOptions extends WarrantCheck {
+export interface WithPermissionOptions extends PermissionCheck {
     redirectTo: string;
 }
 
@@ -10,18 +10,18 @@ export interface WithWarrantOptions extends WarrantCheck {
  * A higher order component (HOC) to wrap around any component that should only be visible to users with the appropriate warrant
  *
  * @param WrappedComponent The component to be rendered if the user has the appropriate warrant
- * @param options The options used to construct the warrant to check for
+ * @param options The options containing the permissionId to check for and a redirectTo path for unauthorized access.
  * @returns
  */
-const withWarrant = (WrappedComponent: React.ComponentClass, options: WithWarrantOptions) => {
+const withPermissionCheck = (WrappedComponent: React.ComponentClass, options: WithPermissionOptions) => {
     return (props: any) => {
-        const { op, warrants, redirectTo } = options;
-        const { sessionToken, hasWarrant } = useWarrant();
+        const { permissionId, consistentRead, debug, redirectTo } = options;
+        const { sessionToken, hasPermission } = useWarrant();
         const [showWrappedComponent, setShowWrappedComponent] = useState<boolean>(false);
 
         useEffect(() => {
             const checkWarrant = async () => {
-                setShowWrappedComponent(await hasWarrant({ op, warrants }));
+                setShowWrappedComponent(await hasPermission({ permissionId, consistentRead, debug }));
             };
 
             if (sessionToken) {
@@ -43,4 +43,4 @@ const withWarrant = (WrappedComponent: React.ComponentClass, options: WithWarran
     }
 }
 
-export default withWarrant;
+export default withPermissionCheck;

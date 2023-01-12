@@ -1,11 +1,14 @@
 import { createContext } from "react";
-import { WarrantCheck } from "@warrantdev/warrant-js";
+import { Check, CheckMany, FeatureCheck, PermissionCheck } from "@warrantdev/warrant-js";
 
 export interface AuthorizationContext {
     clientKey: string;
     sessionToken: string;
     setSessionToken: (sessionToken: string) => void;
-    hasWarrant: (warrantCheck: WarrantCheck) => Promise<boolean>;
+    check: (check: Check) => Promise<boolean>;
+    checkMany: (check: CheckMany) => Promise<boolean>;
+    hasPermission: (check: PermissionCheck) => Promise<boolean>;
+    hasFeature: (check: FeatureCheck) => Promise<boolean>;
     isLoading: boolean;
 }
 
@@ -18,7 +21,10 @@ const WarrantContext = createContext<AuthorizationContext>({
     clientKey: "",
     sessionToken: "",
     setSessionToken: noop,
-    hasWarrant: noop,
+    check: noop,
+    checkMany: noop,
+    hasPermission: noop,
+    hasFeature: noop,
     isLoading: false,
 });
 

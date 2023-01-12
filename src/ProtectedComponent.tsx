@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { WarrantCheck } from "@warrantdev/warrant-js";
+import { CheckMany } from "@warrantdev/warrant-js";
 import useWarrant from "./useWarrant";
 
-export interface ProtectedComponentProps extends WarrantCheck {
+export interface ProtectedComponentProps extends CheckMany {
     children: React.ReactNode;
 }
 
-const ProtectedComponent: React.FunctionComponent<ProtectedComponentProps> = ({ op, warrants, children }) => {
+const ProtectedComponent: React.FunctionComponent<ProtectedComponentProps> = ({ children, op, warrants, consistentRead, debug }) => {
     const [showChildren, setShowChildren] = useState<boolean>(false);
-    const { sessionToken, hasWarrant } = useWarrant();
+    const { sessionToken, checkMany } = useWarrant();
 
     useEffect(() => {
         if (!warrants || warrants.length === 0) {
@@ -16,7 +16,7 @@ const ProtectedComponent: React.FunctionComponent<ProtectedComponentProps> = ({ 
         }
 
         const checkWarrant = async () => {
-            setShowChildren(await hasWarrant({ op, warrants }));
+            setShowChildren(await checkMany({ op, warrants, consistentRead, debug }));
         }
 
         if (sessionToken) {

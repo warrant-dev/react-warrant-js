@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
-import { WarrantCheck } from "@warrantdev/warrant-js";
+import { CheckMany } from "@warrantdev/warrant-js";
 import useWarrant from "./useWarrant";
 
-export interface ProtectedRouteOptions extends WarrantCheck {
+export interface ProtectedRouteOptions extends CheckMany {
     redirectTo: string;
 }
 
@@ -17,33 +17,35 @@ const ProtectedRoute: React.FunctionComponent<ProtectedRouteProps> = ({
         op,
         warrants,
         redirectTo,
+        consistentRead,
+        debug,
     },
     component,
     computedMatch,
     ...rest
 }) => {
-    const { sessionToken, hasWarrant } = useWarrant();
+    const { sessionToken, checkMany } = useWarrant();
     const [showWrappedComponent, setShowWrappedComponent] = useState<boolean | null>(null);
 
     useEffect(() => {
-        const checkForWarrant = async (warrantCheck: WarrantCheck) => {
-            setShowWrappedComponent(await hasWarrant(warrantCheck));
+        const checkForWarrants = async (check: CheckMany) => {
+            setShowWrappedComponent(await checkMany(check));
         };
 
         if (sessionToken) {
             let warrantsToCheck = [...warrants].map(warrant => ({...warrant}));
             warrantsToCheck.forEach((warrant) => {
-                if (computedMatch.params[warrant.objectId]) {
+                if (computedMatch.params[warrant.object.getObjectId()]) {
                     /** @ts-ignore */
                     warrant.objectId = computedMatch.params[warrant.objectId];
                 }
 
-                if (!warrant.objectId) {
+                if (!warrant.object.getObjectId()) {
                     throw new Error("Invalid or no objectId provided for ProtectedRoute");
                 }
             })
 
-            checkForWarrant({ op, warrants: warrantsToCheck });
+            checkForWarrants({ op, warrants: warrantsToCheck, consistentRead, debug });
         }
     }, [sessionToken, JSON.stringify(warrants)]);
 
