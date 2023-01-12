@@ -7,6 +7,3 @@ export { default as useWarrant } from "./useWarrant";
 export { default as FeatureProtectedComponent } from "./FeatureProtectedComponent";
 export { default as PermissionProtectedComponent } from "./PermissionProtectedComponent";
 export { default as ProtectedComponent } from "./ProtectedComponent";
-export { default as FeatureProtectedRoute } from "./FeatureProtectedRoute";
-export { default as PermissionProtectedRoute } from "./PermissionProtectedRoute";
-export { default as ProtectedRoute } from "./ProtectedRoute";
