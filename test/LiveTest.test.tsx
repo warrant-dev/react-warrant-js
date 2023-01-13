@@ -37,7 +37,8 @@ const TestPage: React.FunctionComponent<TestPageProps> = ({ children, sessionTok
     return children;
 };
 
-describe("Live Test", () => {
+// Remove .skip below and add your API_KEY and CLIENT_KEY to run the tests.
+describe.skip("Live Test", () => {
     const apiKey = "API_KEY";
     const clientKey = "CLIENT_KEY";
 
