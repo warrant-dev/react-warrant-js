@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Client as WarrantClient, WarrantCheck } from "@warrantdev/warrant-js";
+import { WarrantClient, CheckMany, Check, PermissionCheck, FeatureCheck } from "@warrantdev/warrant-js";
 
 import WarrantContext from "./WarrantContext";
 
@@ -29,23 +29,62 @@ const WarrantProvider = (options: AuthorizationProvider): JSX.Element => {
         localStorage.setItem(LOCAL_STORAGE_KEY_SESSION_TOKEN, newSessionToken);
     };
 
-    const hasWarrant = useCallback(async (warrantCheck: WarrantCheck): Promise<boolean> => {
+    const check = useCallback(async (check: Check): Promise<boolean> => {
         if (!sessionToken) {
             throw new Error("No session token provided to Warrant. You may have forgotten to call setSessionToken with a valid session token to finish initializing Warrant.");
         }
 
         setIsLoading(true);
-        const isAuthorized = await new WarrantClient({ clientKey, sessionToken, endpoint }).isAuthorized(warrantCheck);
+        const isAuthorized = await new WarrantClient({ clientKey, sessionToken, endpoint }).check(check);
         setIsLoading(false);
 
         return isAuthorized;
+    }, [sessionToken]);
+
+    const checkMany = useCallback(async (check: CheckMany): Promise<boolean> => {
+        if (!sessionToken) {
+            throw new Error("No session token provided to Warrant. You may have forgotten to call setSessionToken with a valid session token to finish initializing Warrant.");
+        }
+
+        setIsLoading(true);
+        const isAuthorized = await new WarrantClient({ clientKey, sessionToken, endpoint }).checkMany(check);
+        setIsLoading(false);
+
+        return isAuthorized;
+    }, [sessionToken]);
+
+    const hasPermission = useCallback(async (check: PermissionCheck): Promise<boolean> => {
+        if (!sessionToken) {
+            throw new Error("No session token provided to Warrant. You may have forgotten to call setSessionToken with a valid session token to finish initializing Warrant.");
+        }
+
+        setIsLoading(true);
+        const hasPermission = await new WarrantClient({ clientKey, sessionToken, endpoint }).hasPermission(check);
+        setIsLoading(false);
+
+        return hasPermission;
+    }, [sessionToken]);
+
+    const hasFeature = useCallback(async (check: FeatureCheck): Promise<boolean> => {
+        if (!sessionToken) {
+            throw new Error("No session token provided to Warrant. You may have forgotten to call setSessionToken with a valid session token to finish initializing Warrant.");
+        }
+
+        setIsLoading(true);
+        const hasFeature = await new WarrantClient({ clientKey, sessionToken, endpoint }).hasFeature(check);
+        setIsLoading(false);
+
+        return hasFeature;
     }, [sessionToken]);
 
     return <WarrantContext.Provider value={{
         clientKey,
         sessionToken,
         setSessionToken: updateSessionToken,
-        hasWarrant,
+        check,
+        checkMany,
+        hasPermission,
+        hasFeature,
         isLoading,
     }}>
         {children}
