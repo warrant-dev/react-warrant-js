@@ -314,7 +314,7 @@ export default MyComponent;
 
 ### `FeatureProtectedComponent`
 
-`FeatureProtectedComponent` is a utility component you can wrap around markup or components that should only be accessible to users with certain privileges. It only renders the components it wraps if the user has the given permission.
+`FeatureProtectedComponent` is a utility component you can wrap around markup or components that should only be accessible to users with certain privileges. It only renders the components it wraps if the user has the given feature.
 
 ```jsx
 import React from "react";
@@ -325,7 +325,7 @@ const MyComponent = () => {
     <div>
       <MyPublicComponent />
       {/* hides MyProtectedComponent unless the user has feature "protected-info" */}
-      <FeatureProtectedComponent permissionId="protected-info">
+      <FeatureProtectedComponent featureId="protected-info">
         <MyProtectedComponent />
       </FeatureProtectedComponent>
     </div>
@@ -463,7 +463,7 @@ export default withPermissionCheck(MySecretComponent, {
 
 ### `withFeatureCheck`
 
-Use the `withPermissionCheck` Higher Order Component (HOC) to protect components that should only be accessible to users with a certain feature.
+Use the `withFeatureCheck` Higher Order Component (HOC) to protect components that should only be accessible to users with a certain feature.
 
 #### **Protecting Routes**
 
