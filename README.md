@@ -205,7 +205,7 @@ export default MyComponent;
 `checkMany` is a utility function that returns a `Promise` which resolves with `true` if the user for the current session token has _all of_ or _any of_ (based on a specified `op`) a set of specified `warrants` and returns `false` otherwise.
 
 ```jsx
-import { CheckOp } from "@warrantdev/warrant-node";
+import { CheckOp } from "@warrantdev/warrant-js";
 
 const { checkMany } = useWarrant();
 
@@ -237,7 +237,7 @@ const userIsAuthorized = await checkMany({
 `hasPermission` is a utility function that returns a `Promise` which resolves with `true` if the user for the current session token has the specified `permissionId` and returns `false` otherwise.
 
 ```jsx
-import { CheckOp } from "@warrantdev/warrant-node";
+import { CheckOp } from "@warrantdev/warrant-js";
 
 const { hasPermission } = useWarrant();
 
@@ -253,7 +253,7 @@ const userHasPermission = await hasPermission({
 `hasFeature` is a utility function that returns a `Promise` which resolves with `true` if the user for the current session token has the specified `featureId` and returns `false` otherwise.
 
 ```jsx
-import { CheckOp } from "@warrantdev/warrant-node";
+import { CheckOp } from "@warrantdev/warrant-js";
 
 const { hasFeature } = useWarrant();
 
@@ -280,8 +280,10 @@ const MyComponent = () => {
       <ProtectedComponent
         warrants={[
           {
-            objectType: "myObject",
-            objectId: object.id,
+            object: {
+              objectType: "myObject",
+              objectId: object.id,
+            },
             relation: "view",
           },
         ]}
@@ -371,8 +373,10 @@ const App = () => {
                 */}
                 <Route path="/protected_route" exact component={withWarrantCheck(ProtectedPage, {
                     warrants: [{
-                        objectType: "route",
-                        objectId: "protected_route",
+                        object: {
+                            objectType: "route",
+                            objectId: "protected_route",
+                        },
                         relation: "view",
                     }],
                     redirectTo: "/public_route",
@@ -400,8 +404,10 @@ const MySecretComponent = () => {
 export default withWarrantCheck(MySecretComponent, {
   warrants: [
     {
-      objectType: "component",
-      objectId: "MySecretComponent",
+      object: {
+        objectType: "component",
+        objectId: "MySecretComponent",
+      },
       relation: "view",
     },
   ],
