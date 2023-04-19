@@ -9,7 +9,13 @@ The Warrant React library provides components, hooks, and helper methods for con
 
 ## Installation
 
-Use `npm` to install the module:
+Use `npm` to install the core Warrant client module [`@warrantdev/warrant-js`](https://github.com/warrant-dev/warrant-js). This module includes methods shared across our client libraries (Vue, Angular, etc.) and additional types (for TypeScript users).
+
+```sh
+npm install @warrantdev/warrant-js
+```
+
+Use `npm` to install `@warrantdev/react-warrant-js`:
 
 ```sh
 npm install @warrantdev/react-warrant-js
