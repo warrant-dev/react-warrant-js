@@ -7,13 +7,13 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup Node Environment
+      - name: Setup Node env
         uses: actions/setup-node@v3
         with:
           registry-url: "https://registry.npmjs.org"
-      - name: Build, Test, and Publish
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build, test, and publish
         run: |
           npm ci
           npm test
